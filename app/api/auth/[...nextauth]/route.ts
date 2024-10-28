@@ -1,7 +1,8 @@
 import NextAuth from "next-auth"
 import GoogleProvider from 'next-auth/providers/google'
 import db from "@/db";
-
+import { Keypair } from "@solana/web3.js";
+import { getPossibleMiddlewareFilenames } from "next/dist/build/utils";
 const handler = NextAuth({
     providers:[
         GoogleProvider({
@@ -14,7 +15,7 @@ const handler = NextAuth({
             if (account?.provider === "google"){
                 const email = user.email;
                 if (!email){
-                    return false
+                    return false;
                 }
                 const userDb = await db.user.findFirst({
                     where:{
@@ -22,16 +23,24 @@ const handler = NextAuth({
                     }
                 });
                 if (userDb){
-                    return true
+                    return true;
                 }
+
+                const keypair = Keypair.generate();
+                const publicKey = keypair.publicKey.toBase58();
+                const privateKey = keypair.secretKey;
+
                 await db.user.create({
                     data:  {
                         username: email,
+                        name: profile?.name,
+                        //typescript ignore
+                        profilePicture:profile?.picture,
                         provider: "Google",
                         solWallet:{
                             create: {
-                                publicKey: "",
-                                privateKey: ""
+                                publicKey: publicKey,
+                                privateKey: privateKey.toString()
                             }
                         },
                         inrWallet:{
@@ -41,8 +50,9 @@ const handler = NextAuth({
                         }
                     }
                 })
+                return true;
             }
-            return false
+            return false;
         }
     }
 })
