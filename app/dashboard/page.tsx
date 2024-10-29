@@ -1,20 +1,41 @@
-"use client";
-import { useSession } from "next-auth/react"
+import { ProfileCard } from "../components/ProfileCard";
+import db from "@/db"; 
+import { authConfig } from "@/lib/auth";
+import { getServerSession } from "next-auth";
+import { cookies, headers } from "next/headers";
 
-export default function(){
-    const session = useSession();
-    return <div className="pt-8  flex justify-center">
-        <div className="max-w-4xl bg-white rounded shadow w-full p-12">
-            <Greeting image={session.data?.user?.image ?? ""} name={session.data?.user?.name ?? ""}/>
-        </div>
-    </div>
+
+
+async function getUserWallet(){
+    const headersList = await headers();
+    const cookiesList = await cookies();
+    const session = await getServerSession(authConfig); 
+    const userWallet = await db.solWallet.findFirst({
+        where: {
+            userId: session?.user?.uid
+        },
+        select:{
+            publicKey: true
+        }
+    })
+
+    if(!userWallet){
+        return {
+            error: "No Solana wallet found associated with the user"
+        }
+    }
+    return {error:null,userWallet};
 }
 
-function Greeting({
-    image,name
-}:{image:string,name:string}){
-    return <div className="flex">
-        <img src={image} alt="NA" className="rounded-full w-14 h-14 mr-4" />
-        <div className="text-2xl font-semibold flex flex-col justify-center">Welcome back, {name}</div>
+
+export default async function(){
+    const headersList = await headers();
+    const cookiesList = await cookies();
+    const userWallet = await getUserWallet()
+    if (userWallet.error || !userWallet.userWallet?.publicKey){
+        return <>No Solana wallet found</>
+    }
+    return <div>
+        <ProfileCard publicKey={userWallet.userWallet?.publicKey}/>
     </div>
 }
