@@ -35,12 +35,13 @@ export const ProfileCard = ({publicKey}:{publicKey: string}) => {
 }
 
 function Assets({publicKey}:{publicKey: string}) {
-    const [showAddress, setShowAddress] = useState(false);
-
+    // const [showAddress, setShowAddress] = useState(false);
+    const [copied,setCopied] = useState(false);
     const copyToClipboard = async () => {
         try {
             await navigator.clipboard.writeText(publicKey);
             // You might want to show a toast notification here
+            setCopied(true);
             console.log('Address copied to clipboard!');
         } catch (err) {
             console.error('Failed to copy address:', err);
@@ -50,22 +51,26 @@ function Assets({publicKey}:{publicKey: string}) {
     return <div className="text-slate-500 mt-4">
         <div className="text-lg font-medium mb-2">CEXWalletHub Account Assets</div>
         <div className="flex justify-between mt-4">
-            <div className="flex-1 mr-4">
+            {/* <div className="flex-1 mr-4">
                 {showAddress && (
                     <div className="bg-gray-100 p-3 rounded font-mono text-sm break-all max-w-md">
                         {publicKey}
                     </div>
                 )}
-            </div>
+            </div> */}
             <div className="flex gap-2">
-                <PrimaryButton onClick={() => setShowAddress(!showAddress)}>
+                {/* <PrimaryButton onClick={() => setShowAddress(!showAddress)}>
                     {showAddress ? 'Hide Address' : 'Show Wallet Address'}
                 </PrimaryButton>
                 {showAddress && (
                     <PrimaryButton onClick={copyToClipboard}>
                         Copy Address
                     </PrimaryButton>
-                )}
+                )} */
+                }
+                <PrimaryButton onClick={copyToClipboard}>{copied ? "Copied" : "Your Wallet Address"}</PrimaryButton>
+
+
             </div>
         </div>
     </div>
