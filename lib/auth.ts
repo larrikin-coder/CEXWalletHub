@@ -2,7 +2,6 @@ import GoogleProvider from "next-auth/providers/google";
 import db from "@/db";
 import { Keypair} from "@solana/web3.js";
 import { Session } from "next-auth";
-import { headers,cookies } from "next/headers";
 
 export interface session extends Session{
     user:{

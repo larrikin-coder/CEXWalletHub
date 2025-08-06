@@ -1,14 +1,12 @@
+
 import { ProfileCard } from "../components/ProfileCard";
 import db from "@/db"; 
 import { authConfig } from "@/lib/auth";
-import { getServerSession } from "next-auth";
-import { cookies, headers } from "next/headers";
+import { getServerSession } from "next-auth/next";
+import { headers,cookies } from "next/headers";
 
 
-
-async function getUserWallet(){
-    const headersList = await headers();
-    const cookiesList = await cookies();
+async function getUserWallet(){  
     const session = await getServerSession(authConfig); 
     const userWallet = await db.solWallet.findFirst({
         where: {
@@ -28,9 +26,7 @@ async function getUserWallet(){
 }
 
 
-export default async function(){
-    const headersList = await headers();
-    const cookiesList = await cookies();
+export default async function Dashboard(){
     const userWallet = await getUserWallet()
     if (userWallet.error || !userWallet.userWallet?.publicKey){
         return <>No Solana wallet found</>
