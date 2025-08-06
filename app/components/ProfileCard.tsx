@@ -8,17 +8,18 @@ export const ProfileCard = ({publicKey}:{publicKey: string}) => {
     const session = useSession();
     const router = useRouter();
     
+    useEffect(() => {
+        if (session.status !== "loading" && !session.data?.user) {
+            router.push("/");
+        }
+    }, [session.status, session.data, router]);
+
+    // NOW handle conditional rendering
     if (session.status === "loading"){
         return <div>
             Loading...
         </div>
     }
-
-    useEffect(() => {
-        if (session.status !== "loading" && !session.data?.user) {
-            router.push("/");
-        }
-    }, [session.status, session.data, router])
 
     // Don't render if not authenticated
     if (!session.data?.user) {
@@ -36,18 +37,22 @@ export const ProfileCard = ({publicKey}:{publicKey: string}) => {
 function Assets({publicKey}:{publicKey: string}) {
     const [showAddress, setShowAddress] = useState(false);
 
-    const copyToClipboard = () => {
-        navigator.clipboard.writeText(publicKey);
-        // You might want to show a toast notification here
+    const copyToClipboard = async () => {
+        try {
+            await navigator.clipboard.writeText(publicKey);
+            // You might want to show a toast notification here
+            console.log('Address copied to clipboard!');
+        } catch (err) {
+            console.error('Failed to copy address:', err);
+        }
     };
 
     return <div className="text-slate-500 mt-4">
-        CEXWalletHub Account Assets
-        <br />
+        <div className="text-lg font-medium mb-2">CEXWalletHub Account Assets</div>
         <div className="flex justify-between mt-4">
-            <div>
+            <div className="flex-1 mr-4">
                 {showAddress && (
-                    <div className="bg-gray-100 p-3 rounded font-mono text-sm break-all">
+                    <div className="bg-gray-100 p-3 rounded font-mono text-sm break-all max-w-md">
                         {publicKey}
                     </div>
                 )}
@@ -69,9 +74,9 @@ function Assets({publicKey}:{publicKey: string}) {
 function Greeting({
     image, name
 }: {image: string, name: string}) {
-    return <div className="flex">
+    return <div className="flex items-center">
         <img src={image} alt="Profile" className="rounded-full w-14 h-14 mr-4" />
-        <div className="text-2xl font-semibold flex flex-col justify-center">
+        <div className="text-2xl font-semibold">
             Welcome back, {name}
         </div>
     </div>

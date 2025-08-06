@@ -5,6 +5,7 @@ import { authConfig } from "@/lib/auth";
 import { getServerSession } from "next-auth/next";
 import { headers,cookies } from "next/headers";
 
+export const dynamic = 'force-dynamic';
 
 async function getUserWallet(){  
     const session = await getServerSession(authConfig); 
