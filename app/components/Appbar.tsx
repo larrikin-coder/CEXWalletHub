@@ -10,9 +10,17 @@ export const Appbar = () =>{
                 CEXWalletHub
             </div>
             <div>
+
             {session.data?.user ? <PrimaryButton onClick={()=>{
                 signOut()
-                }}>Log Out</PrimaryButton> : <PrimaryButton onClick={()=>{
+                }}>
+                    {session.data?.user &&(
+                <div className="flex items-center gap-3">
+                <img src={session.data.user.image || ""} alt="Profile" className="w-8 h-8 rounded-full"></img>
+                Log Out
+                </div>
+            )}
+                </PrimaryButton> : <PrimaryButton onClick={()=>{
                     signIn()
                     }}>Sign In</PrimaryButton>}
             </div>

@@ -58,6 +58,9 @@ function Assets({publicKey}:{publicKey: string}) {
                     </div>
                 )}
             </div> */}
+            <div>
+                Your Avl Balance
+            </div>
             <div className="flex gap-2">
                 {/* <PrimaryButton onClick={() => setShowAddress(!showAddress)}>
                     {showAddress ? 'Hide Address' : 'Show Wallet Address'}
@@ -68,6 +71,7 @@ function Assets({publicKey}:{publicKey: string}) {
                     </PrimaryButton>
                 )} */
                 }
+               
                 <PrimaryButton onClick={copyToClipboard}>{copied ? "Copied" : "Your Wallet Address"}</PrimaryButton>
 
 
